@@ -30,19 +30,7 @@ print(numerical_columns)
 print("\n-----Colonne categoriche-----")
 print(categorical_columns)
 
-# visualizzazione delle feature numeriche
-'''plt.figure(figsize=(10, 8))
-
-for i, col in enumerate(numerical_columns, 1):
-    plt.subplot(3, 2, i)
-    sns.histplot(x=col, data=df, kde=False, bins=20, color='blue')
-    plt.title(f'{col}')
-    plt.xlabel('')
-    plt.ylabel('Frequenza')
-
-plt.tight_layout()
-plt.show()'''
-
+print("\n-----Visualizzazione dei valori delle features-----")
 # visualizzazione features numeriche
 plt.figure(figsize=(10, 7))
 for i, col in enumerate(numerical_columns, 1):
@@ -66,3 +54,24 @@ for i, col in enumerate(categorical_columns, 1):
 plt.tight_layout(pad=3.0)
 plt.show()
 
+print("\n-----Visualizzazione della correlazione tra le features e il target-----")
+# feature numeriche con il target
+plt.figure(figsize=(15, 7))
+for i, col in enumerate(numerical_columns, 1):
+    plt.subplot(2, 3, i)
+    sns.boxplot(x='Personality', y=col, data=df, palette='Set2')
+    plt.title(f'{col} by Personality')
+    plt.xticks(rotation=45)
+plt.tight_layout(pad=3.0)
+plt.show()
+
+# feature categoriche con il target
+cat_col = [col for col in categorical_columns if col != 'Personality']
+plt.figure(figsize=(10, 6))
+for i, col in enumerate(cat_col, 1):
+    plt.subplot(1, 2, i)
+    sns.countplot(x=col, hue='Personality', data=df, palette='Set1')
+    plt.title(f'{col} by Personality')
+    plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()

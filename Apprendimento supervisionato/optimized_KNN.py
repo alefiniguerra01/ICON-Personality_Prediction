@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, roc_curve, roc_auc_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
@@ -74,27 +74,17 @@ if __name__ == "__main__":
     plt.show()
 
     # curva di ROC
-    from sklearn.metrics import roc_curve, roc_auc_score
-    import matplotlib.pyplot as plt
-
-    # Assumiamo che 'best_knn_model' sia il tuo modello ottimizzato
-    # e che X_test_scaled e y_test siano pronti
-
-    # 1. Ottieni le probabilità di previsione per la classe positiva (di solito la classe '1')
-    # predict_proba restituisce le probabilità per ogni classe, [prob_classe_0, prob_classe_1]
-    # A noi interessa la seconda colonna, quindi usiamo [:, 1]
     y_pred_proba = best_knn_model.predict_proba(X_test_scaled)[:, 1]
 
-    # 2. Calcola i valori per la curva ROC
+    # valori per la curva ROC
     fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
 
-    # 3. Calcola l'area sotto la curva (AUC)
+    # area sotto la curva (AUC)
     auc = roc_auc_score(y_test, y_pred_proba)
 
-    # 4. Crea il grafico
     plt.figure(figsize=(8, 6))
     plt.plot(fpr, tpr, color='blue', label=f'Curva ROC (AUC = {auc:.2f})')
-    plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Classificatore Casuale') # Linea di riferimento
+    plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Classificatore Casuale')
     plt.xlabel('Tasso di Falsi Positivi (FPR)')
     plt.ylabel('Tasso di Veri Positivi (TPR)')
     plt.title('Curva ROC per il Modello KNN Ottimizzato')

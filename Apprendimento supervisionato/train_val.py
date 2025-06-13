@@ -5,7 +5,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, roc_curve, roc_auc_score
 
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
@@ -29,8 +29,8 @@ models = {
     'Random Forest': RandomForestClassifier(random_state=42),
     'Gradient Boosting': GradientBoostingClassifier(random_state=42),
     'Decision Tree': DecisionTreeClassifier(random_state=42),
-    'SVM': SVC(),
     'KNN': KNeighborsClassifier(),
+    'SVM': SVC(),
 }
 
 for name, model in models.items():
@@ -53,4 +53,23 @@ for name, model in models.items():
         plt.xlabel('Valore Previsto')
         plt.ylabel('Valore Reale')
         plt.title(f'Matrice di confusione per il modello {name}')
+        plt.show()
+
+        # curva di ROC
+        y_pred_proba = model.predict_proba(X_test_scaled)[:, 1]
+
+        # valori per la curva ROC
+        fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
+
+        # area sotto la curva (AUC)
+        auc = roc_auc_score(y_test, y_pred_proba)
+
+        plt.figure(figsize=(8, 6))
+        plt.plot(fpr, tpr, color='blue', label=f'Curva ROC (AUC = {auc:.2f})')
+        plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Classificatore Casuale')
+        plt.xlabel('Tasso di Falsi Positivi (FPR)')
+        plt.ylabel('Tasso di Veri Positivi (TPR)')
+        plt.title(f'Curva ROC per il Modello {name}')
+        plt.legend()
+        plt.grid(True)
         plt.show()

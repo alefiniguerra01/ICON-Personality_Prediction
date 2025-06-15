@@ -74,9 +74,9 @@ feature_importance_df = pd.DataFrame({
         'Feature': feature_names,
         'Importance': importances
 }).sort_values(by='Importance', ascending=False)
-plt.figure(figsize=(15, 7))
+plt.figure(num = "Importanza Features Random Forest Ottimizzato", figsize=(15, 7))
+plt.suptitle('IMPORTANZA DELLE FEATURES NEL MODELLO RANDOM FOREST OTTIMIZZATO', fontsize=16)
 sns.barplot(x='Importance', y='Feature', data=feature_importance_df, palette='viridis')
-plt.title('Importanza delle Feature nel Modello Random Forest')
 plt.xlabel('Punteggio di Importanza')
 plt.ylabel('Feature')
 plt.show()
@@ -85,23 +85,23 @@ plt.show()
 y_pred_proba = best_rf_final.predict_proba(X_test_scaled)[:, 1]
 fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
 auc = roc_auc_score(y_test, y_pred_proba)
-plt.figure(figsize=(8, 6))
+plt.figure(num = "Curva ROC Random Forest Ottimizzato", figsize=(8, 6))
+plt.suptitle('CURVA ROC PER IL MODELLO RANDOM FOREST OTTIMIZZATO', fontsize=16)
 plt.plot(fpr, tpr, color='blue', label=f'Curva ROC (AUC = {auc:.2f})')
 plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Classificatore Casuale')
 plt.xlabel('Tasso di Falsi Positivi (FPR)')
 plt.ylabel('Tasso di Veri Positivi (TPR)')
-plt.title('Curva ROC per il Modello Random Forest Ottimizzato')
 plt.legend(loc='lower right')
 plt.grid(True)
 plt.show()
 
 # matrice di confusione
 cm = confusion_matrix(y_test, y_final_preds)
-plt.figure(figsize=(8, 6))
+plt.figure(num = "Matrice di Confusione Random Forest Ottimizzato", figsize=(9, 6))
+plt.suptitle('MATRICE DI CONFUSIONE PER IL MODELLO RANDOM FOREST OTTIMIZZATO', fontsize=16)
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
                 xticklabels=['Extrovert', 'Introvert'], 
                 yticklabels=['Extrovert', 'Introvert'])
 plt.xlabel('Valore Previsto')
 plt.ylabel('Valore Reale')
-plt.title('Matrice di confusione per il modello Random Forest ottimizzato')
 plt.show()

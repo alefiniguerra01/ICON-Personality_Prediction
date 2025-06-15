@@ -41,7 +41,8 @@ print(f"\n Classification Report:\nAccuracy: {acc:.3f}\n", classification_report
 
 # rappresentazione grafica dei risultati
 results_df = pd.DataFrame(grid_search.cv_results_)
-plt.figure(figsize=(12, 6))
+plt.figure(num = "Ricerca Iperparametri", figsize=(12, 6))
+plt.suptitle('PERFORMANCE DI KNN (TRAINING VS VALIDATION)', fontsize=16)
 sns.lineplot(x=results_df['param_n_neighbors'], 
                 y=results_df['mean_test_score'], 
                 marker='o', 
@@ -52,7 +53,6 @@ sns.lineplot(x=results_df['param_n_neighbors'],
                 marker='o', 
                 color='darkorange', 
                 label='Training Score')
-plt.title('Performance di KNN (Training vs. Validation)')
 plt.xlabel('Numero di Vicini (k)')
 plt.ylabel('Accuracy')
 plt.axvline(x=best_k, color='red', linestyle='--', label=f'Miglior valore n_neighbors = {best_k}')
@@ -63,13 +63,13 @@ plt.show()
 # matrice di confusione
 cm = confusion_matrix(y_test, y_final_preds)
 
-plt.figure(figsize=(8, 6))
+plt.figure(num = "Matrice di Confusione KNN Ottimizzato", figsize=(8, 6))
+plt.suptitle('MATRICE DI CONFUSIONE PER KNN OTTIMIZZATO', fontsize=16)
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
                 xticklabels=['Extrovert', 'Introvert'], 
                 yticklabels=['Extrovert', 'Introvert'])
 plt.xlabel('Valore Previsto')
 plt.ylabel('Valore Reale')
-plt.title('Matrice di confusione per il modello KNN ottimizzato')
 plt.show()
 
 # curva di ROC
@@ -81,12 +81,12 @@ fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
 # area sotto la curva (AUC)
 auc = roc_auc_score(y_test, y_pred_proba)
 
-plt.figure(figsize=(8, 6))
+plt.figure(num = "Curva ROC KNN Ottimizzato", figsize=(8, 6))
+plt.suptitle('CURVA ROC PER KNN OTTIMIZZATO', fontsize=16)
 plt.plot(fpr, tpr, color='blue', label=f'Curva ROC (AUC = {auc:.2f})')
 plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Classificatore Casuale')
 plt.xlabel('Tasso di Falsi Positivi (FPR)')
 plt.ylabel('Tasso di Veri Positivi (TPR)')
-plt.title('Curva ROC per il Modello KNN Ottimizzato')
 plt.legend()
 plt.grid(True)
 plt.show()

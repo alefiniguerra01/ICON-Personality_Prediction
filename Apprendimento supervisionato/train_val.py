@@ -10,7 +10,6 @@ from sklearn.metrics import accuracy_score, classification_report, roc_curve, ro
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
-# Importazione del DataFrame preprocessato
 
 # Suddivisione tra features e target
 X = df.drop("Personality", axis=1)

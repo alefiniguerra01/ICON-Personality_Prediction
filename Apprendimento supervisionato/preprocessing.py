@@ -30,7 +30,8 @@ print(df.head())
 if __name__ == "__main__":
     # Heatmap per visualizzare la correlazione tra le variabili
     corr = df.corr()
-    plt.figure(figsize=(10, 6))
+    plt.figure(num = "Heatmap Correlazione Variabili", figsize=(10, 6))
+    plt.suptitle('HEATMAP DELLA CORRELAZIONE TRA VARIABILI', fontsize=16)
     sns.heatmap(corr, annot=True, fmt=".2f", square=False, cmap='coolwarm')
     plt.tight_layout()
     plt.show()

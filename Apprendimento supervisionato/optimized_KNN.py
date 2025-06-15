@@ -26,20 +26,6 @@ grid_search = GridSearchCV(estimator=knn,
 
 grid_search.fit(X_train_scaled, y_train)
 
-# salvataggio dei risultati
-print("\n-----Salvataggio dei risultati su file CSV-----")
-results_df = pd.DataFrame(grid_search.cv_results_)
-interesting_columns = [
-    'rank_test_score',
-    'mean_test_score',
-    'param_n_neighbors',
-    'std_test_score',
-    'mean_fit_time'
-]
-results_df = results_df[interesting_columns].sort_values(by='rank_test_score')
-results_df.to_csv('tuning_results/knn_tuning_results.csv', index=False)
-print("Risultati salvati con successo in 'tuning_results/knn_tuning_results.csv'")
-
 # stampo i risultati
 print("\n-----Ricerca completata-----")
 best_k = grid_search.best_params_['n_neighbors']

@@ -3,68 +3,73 @@ import pandas as pd
 import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, roc_auc_score, roc_curve
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from train_val import X_train_scaled, y_train, X_test_scaled, y_test
 from preprocessing import df
 
 # nomi delle colonne necessarie per i grafici
 feature_names = df.drop("Personality", axis=1).columns.tolist()
 
-print("\n-----Ricerca dei migliori iperparametri per Random Forest-----")
-print("Attenzione: questa operazione potrebbe richiedere del tempo")
+print("-----FASE 1: Inizio ricerca rapida con RandomizedSearchCV-----")
 rf = RandomForestClassifier(random_state=42)
 
-# imposto gli iperparametri da ottimizzare
-param_distributions = {
-    'n_estimators': [100, 200, 300, 500],
+# definisco gli iperparametri
+param_dist = {
+    'n_estimators': [100, 200, 300, 400, 500],
     'max_depth': [10, 20, 30, 40, 50, None],
     'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [1, 2, 4],
-    'bootstrap': [True]
+    'min_samples_leaf': [1, 2, 4]
 }
 
-# utilizzo Randomized Search CV
+# stabilisco di eseguire 25 iterate
 random_search = RandomizedSearchCV(estimator=rf,
-                                   param_distributions=param_distributions,
-                                   n_iter=100,
+                                   param_distributions=param_dist,
+                                   n_iter=25,
                                    cv=5,
                                    scoring='accuracy',
                                    n_jobs=-1,
-                                   random_state=42)
-
+                                   random_state=42,
+                                   verbose=1)
 random_search.fit(X_train_scaled, y_train)
 
-# salvataggio dei risultati
-print("\n-----Ricerca completata-----")
-print("-----Salvataggio dei risultati su file CSV-----")
-results_df = pd.DataFrame(random_search.cv_results_)
-interesting_columns = [
-    'rank_test_score',
-    'mean_test_score',
-    'std_test_score',
-    'param_n_estimators',
-    'param_max_depth',
-    'param_min_samples_split',
-    'param_min_samples_leaf'
-]
-results_df = results_df[interesting_columns].sort_values(by='rank_test_score')
-results_df.to_csv('tuning_results/random_forest_tuning_results.csv', index=False)
-print("Risultati salvati con successo in 'tuning_results/random_forest_tuning_results.csv'")
+# stampo i risultati della fase 1
+print("\n-----Risultati FASE 1-----")
+best_params_random = random_search.best_params_
+print(f"Migliori parametri trovati nella ricerca casuale: {best_params_random}")
 
-# stampo i risultati
-best_params = random_search.best_params_
-print(f"\nI migliori iperparametri trovati sono: {best_params}")
-print(f"Il miglior valore di Accuracy per la CV è: {random_search.best_score_:.3f}")
+print("\n-----FASE 2: Inizio ricerca rirata con GridSearchCV-----")
 
-# valutazione finale
+param_grid_focused = {
+    'n_estimators': [best_params_random['n_estimators'] - 50, 
+                     best_params_random['n_estimators'], 
+                     best_params_random['n_estimators'] + 50],
+    'max_depth': [best_params_random['max_depth'] - 5 if best_params_random['max_depth'] is not None else 25, 
+                  best_params_random['max_depth'], 
+                  best_params_random['max_depth'] + 5 if best_params_random['max_depth'] is not None else 35],
+    'min_samples_split': [best_params_random['min_samples_split']],
+    'min_samples_leaf': [best_params_random['min_samples_leaf']]
+}
+
+grid_search = GridSearchCV(estimator=rf,
+                           param_grid=param_grid_focused,
+                           scoring='accuracy',
+                           cv=5,
+                           n_jobs=-1,
+                           verbose=1)
+grid_search.fit(X_train_scaled, y_train)
+
+print("\n-----Risultati FASE 2-----")
+print(f"Migliori iperparametri definitivi trovati:  {grid_search.best_params_}")
+print(f"\nMiglior accuracy ottenuto durante la cross-validation finale: {grid_search.best_score_:.3f}")
+
 print("\n-----Valutazione finale del modello Random Forest ottimizzato-----")
-best_rf_model = random_search.best_estimator_
-y_final_preds = best_rf_model.predict(X_test_scaled)
+best_rf_final = grid_search.best_estimator_
+y_final_preds = best_rf_final.predict(X_test_scaled)
 acc = accuracy_score(y_test, y_final_preds)
 print(f"\n Classification Report:\nAccuracy: {acc:.3f}\n", classification_report(y_test, y_final_preds, target_names=['Extrovert', 'Introvert']))
 
 # rappresentazione grafica dei risultati
-importances = best_rf_model.feature_importances_
+importances = best_rf_final.feature_importances_
 feature_importance_df = pd.DataFrame({
         'Feature': feature_names,
         'Importance': importances
@@ -77,7 +82,7 @@ plt.ylabel('Feature')
 plt.show()
 
 # curva di ROC
-y_pred_proba = best_rf_model.predict_proba(X_test_scaled)[:, 1]
+y_pred_proba = best_rf_final.predict_proba(X_test_scaled)[:, 1]
 fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
 auc = roc_auc_score(y_test, y_pred_proba)
 plt.figure(figsize=(8, 6))

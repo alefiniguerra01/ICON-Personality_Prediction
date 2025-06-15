@@ -10,7 +10,7 @@ from preprocessing import df
 # nomi delle colonne necessarie per i grafici
 feature_names = df.drop("Personality", axis=1).columns.tolist()
 
-print("-----FASE 1: Inizio ricerca rapida con RandomizedSearchCV-----")
+print("\n-----FASE 1: Inizio ricerca rapida con Random Search CV-----")
 rf = RandomForestClassifier(random_state=42)
 
 # definisco gli iperparametri
@@ -37,7 +37,7 @@ print("\n-----Risultati FASE 1-----")
 best_params_random = random_search.best_params_
 print(f"Migliori parametri trovati nella ricerca casuale: {best_params_random}")
 
-print("\n-----FASE 2: Inizio ricerca rirata con GridSearchCV-----")
+print("\n-----FASE 2: Inizio ricerca rirata con Grid Search CV-----")
 
 param_grid_focused = {
     'n_estimators': [best_params_random['n_estimators'] - 50, 

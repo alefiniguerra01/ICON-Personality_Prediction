@@ -4,11 +4,8 @@ import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, roc_auc_score, roc_curve
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
-from train_val import X_train_scaled, y_train, X_test_scaled, y_test
+from train_val import X_train_scaled, y_train, X_test_scaled, y_test, X
 from preprocessing import df
-
-# nomi delle colonne necessarie per i grafici
-feature_names = df.drop("Personality", axis=1).columns.tolist()
 
 print("\n-----FASE 1: Inizio ricerca rapida con Random Search CV-----")
 rf = RandomForestClassifier(random_state=42)
@@ -69,13 +66,14 @@ acc = accuracy_score(y_test, y_final_preds)
 print(f"\n Classification Report:\nAccuracy: {acc:.3f}\n", classification_report(y_test, y_final_preds, target_names=['Extrovert', 'Introvert']))
 
 # rappresentazione grafica dei risultati
+feature_names = X.columns.tolist()
 importances = best_rf_final.feature_importances_
 feature_importance_df = pd.DataFrame({
         'Feature': feature_names,
         'Importance': importances
 }).sort_values(by='Importance', ascending=False)
 plt.figure(num = "Importanza Features Random Forest Ottimizzato", figsize=(15, 7))
-plt.suptitle('IMPORTANZA DELLE FEATURES NEL MODELLO RANDOM FOREST OTTIMIZZATO', fontsize=16)
+plt.suptitle('IMPORTANZA DELLE FEATURES NEL MODELLO RANDOM FOREST OTTIMIZZATO', fontsize=14)
 sns.barplot(x='Importance', y='Feature', data=feature_importance_df, palette='viridis')
 plt.xlabel('Punteggio di Importanza')
 plt.ylabel('Feature')
@@ -86,7 +84,7 @@ y_pred_proba = best_rf_final.predict_proba(X_test_scaled)[:, 1]
 fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
 auc = roc_auc_score(y_test, y_pred_proba)
 plt.figure(num = "Curva ROC Random Forest Ottimizzato", figsize=(8, 6))
-plt.suptitle('CURVA ROC PER IL MODELLO RANDOM FOREST OTTIMIZZATO', fontsize=16)
+plt.suptitle('CURVA ROC PER IL MODELLO RANDOM FOREST OTTIMIZZATO', fontsize=14)
 plt.plot(fpr, tpr, color='blue', label=f'Curva ROC (AUC = {auc:.2f})')
 plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Classificatore Casuale')
 plt.xlabel('Tasso di Falsi Positivi (FPR)')
@@ -98,7 +96,7 @@ plt.show()
 # matrice di confusione
 cm = confusion_matrix(y_test, y_final_preds)
 plt.figure(num = "Matrice di Confusione Random Forest Ottimizzato", figsize=(9, 6))
-plt.suptitle('MATRICE DI CONFUSIONE PER IL MODELLO RANDOM FOREST OTTIMIZZATO', fontsize=16)
+plt.suptitle('MATRICE DI CONFUSIONE PER IL MODELLO RANDOM FOREST OTTIMIZZATO', fontsize=14)
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
                 xticklabels=['Extrovert', 'Introvert'], 
                 yticklabels=['Extrovert', 'Introvert'])

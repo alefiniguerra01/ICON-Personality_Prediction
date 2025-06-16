@@ -34,7 +34,7 @@ if __name__ == "__main__":
     print("\n-----Visualizzazione dei valori delle features-----")
     # visualizzazione features numeriche
     plt.figure(num='Distribuzione Features Numeriche', figsize=(10, 7))
-    plt.suptitle('DISTRIBUZIONE DELLE FEATURES NUMERICHE', fontsize=16)
+    plt.suptitle('DISTRIBUZIONE DELLE FEATURES NUMERICHE', fontsize=14)
     for i, col in enumerate(numerical_columns, 1):
         plt.subplot(3, 2, i)
         sns.histplot(data=df, x=col, bins=15, kde=True, color="skyblue")
@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     # visualizzazione delle features categoriche
     plt.figure(num='Distribuzione Features Categoriche', figsize=(10, 7))
-    plt.suptitle('DISTRIBUZIONE DELLE FEATURES CATEGORICHE', fontsize=16)
+    plt.suptitle('DISTRIBUZIONE DELLE FEATURES CATEGORICHE', fontsize=14)
     for i, col in enumerate(categorical_columns, 1):
         plt.subplot(2, 2, i)
         sns.countplot(data=df, x=col, palette="pastel")
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     print("\n-----Visualizzazione della correlazione tra le features e il target-----")
     # feature numeriche con il target
     plt.figure(num='Correlazione Features Numeriche vs. Target', figsize=(15, 7))
-    plt.suptitle('CORRELAZIONE TRA FEATURES NUMERICHE E PERSONALITÀ',  fontsize=16)
+    plt.suptitle('CORRELAZIONE TRA FEATURES NUMERICHE E PERSONALITÀ',  fontsize=14)
     for i, col in enumerate(numerical_columns, 1):
         plt.subplot(2, 3, i)
         sns.boxplot(x='Personality', y=col, data=df, palette='Set2')
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     # feature categoriche con il target
     cat_col = [col for col in categorical_columns if col != 'Personality']
     plt.figure(num='Correlazione Features Categoriche vs. Target', figsize=(10, 6))
-    plt.suptitle('CORRELAZIONE TRA FEATURES CATEGORICHE E PERSONALITÀ',  fontsize=16)
+    plt.suptitle('CORRELAZIONE TRA FEATURES CATEGORICHE E PERSONALITÀ',  fontsize=14)
     for i, col in enumerate(cat_col, 1):
         plt.subplot(1, 2, i)
         sns.countplot(x=col, hue='Personality', data=df, palette='Set1')

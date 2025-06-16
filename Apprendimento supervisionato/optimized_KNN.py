@@ -42,7 +42,7 @@ print(f"\n Classification Report:\nAccuracy: {acc:.3f}\n", classification_report
 # rappresentazione grafica dei risultati
 results_df = pd.DataFrame(grid_search.cv_results_)
 plt.figure(num = "Ricerca Iperparametri", figsize=(12, 6))
-plt.suptitle('PERFORMANCE DI KNN (TRAINING VS VALIDATION)', fontsize=16)
+plt.suptitle('PERFORMANCE DI KNN (TRAINING VS VALIDATION)', fontsize=14)
 sns.lineplot(x=results_df['param_n_neighbors'], 
                 y=results_df['mean_test_score'], 
                 marker='o', 
@@ -64,7 +64,7 @@ plt.show()
 cm = confusion_matrix(y_test, y_final_preds)
 
 plt.figure(num = "Matrice di Confusione KNN Ottimizzato", figsize=(8, 6))
-plt.suptitle('MATRICE DI CONFUSIONE PER KNN OTTIMIZZATO', fontsize=16)
+plt.suptitle('MATRICE DI CONFUSIONE PER KNN OTTIMIZZATO', fontsize=14)
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
                 xticklabels=['Extrovert', 'Introvert'], 
                 yticklabels=['Extrovert', 'Introvert'])
@@ -82,7 +82,7 @@ fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
 auc = roc_auc_score(y_test, y_pred_proba)
 
 plt.figure(num = "Curva ROC KNN Ottimizzato", figsize=(8, 6))
-plt.suptitle('CURVA ROC PER KNN OTTIMIZZATO', fontsize=16)
+plt.suptitle('CURVA ROC PER KNN OTTIMIZZATO', fontsize=14)
 plt.plot(fpr, tpr, color='blue', label=f'Curva ROC (AUC = {auc:.2f})')
 plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Classificatore Casuale')
 plt.xlabel('Tasso di Falsi Positivi (FPR)')

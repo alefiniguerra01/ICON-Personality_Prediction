@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, roc_curve, roc_auc_score
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -15,11 +15,13 @@ param_grid = {
     'n_neighbors': list(range(1, 31))
 }
 
+skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
 # utilizzo Grid Search CV
 grid_search = GridSearchCV(estimator=knn,
                            param_grid=param_grid,
                            scoring='accuracy',
-                           cv=5,
+                           cv=skf,
                            n_jobs=-1,
                            verbose=1,
                            return_train_score=True)

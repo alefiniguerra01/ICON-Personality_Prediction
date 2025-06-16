@@ -34,7 +34,7 @@ for name, model in models.items():
     model.fit(X_train_scaled, y_train)
     y_preds = model.predict(X_test_scaled)
     acc = accuracy_score(y_test, y_preds)
-    print(f"\n-----{name}= Accuracy: {acc:.3f}-----")
+    print(f"\n-----{name}= Accuracy: {acc:.4f}-----")
     print("\n Classification Report:\n", classification_report(y_test, y_preds, target_names=['Extrovert', 'Introvert']))
 
     print("------------------")

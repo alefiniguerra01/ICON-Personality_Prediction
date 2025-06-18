@@ -60,5 +60,4 @@ punteggio_totale(Persona, Tipo, PunteggioTotale) :-
 % regola che determina la personalità
 personalita_con_punteggio(Persona, Tipo, Punteggio) :-
     tipo_personalita(Tipo),
-    punteggio_totale(Persona, Tipo, Punteggio),
-    Punteggio > 0.
+    punteggio_totale(Persona, Tipo, Punteggio).

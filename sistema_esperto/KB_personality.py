@@ -81,12 +81,12 @@ def run_personality_expert_system():
         if not results:
             print("Nessuna personalità ha ottenuto un punteggio. Risultato: INDETERMINATO")
             return
-        
-                
+                        
         best_result = max(results, key=lambda x: x['Punteggio'])
         max_score = best_result['Punteggio']
         winners = [res['Tipo'] for res in results if res['Punteggio'] == max_score]
 
+        # sistema a punteggio: se il punteggio è uguale, si ha la parità
         if len(winners) == 1:
             final_prediction = str(winners[0]).upper()
         else:

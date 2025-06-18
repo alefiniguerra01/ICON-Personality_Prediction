@@ -5,6 +5,9 @@ from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
 from train_val import X_train_scaled, y_train, X_test_scaled, y_test
+import warnings
+
+warnings.simplefilter("ignore", category=FutureWarning)
 
 print("\n-----Ricerca dei migliori iperparametri per KNN-----")
 
@@ -16,7 +19,7 @@ param_grid = {
 }
 
 # utilizzo Grid Search CV
-grid_search = GridSearchCV(estimator=knn,
+grid_search_knn = GridSearchCV(estimator=knn,
                            param_grid=param_grid,
                            scoring='accuracy',
                            cv=5,
@@ -24,23 +27,23 @@ grid_search = GridSearchCV(estimator=knn,
                            verbose=1,
                            return_train_score=True)
 
-grid_search.fit(X_train_scaled, y_train)
+grid_search_knn.fit(X_train_scaled, y_train)
 
 # stampo i risultati
 print("\n-----Ricerca completata-----")
-best_k = grid_search.best_params_['n_neighbors']
-print(f"Il miglior valore di n_neighbors trovato è: {best_k}")
-print(f"Il miglior valore di Accuracy per la CV è: {grid_search.best_score_:.3f}")
+best_k = grid_search_knn.best_params_['n_neighbors']
+print(f"Migliori iperparametri trovati: {grid_search_knn.best_params_}")
+print(f"Miglior Accuracy (Cross Validation): {grid_search_knn.best_score_:.3f}")
 
 # valutazione finale
 print("\n-----Valutazione finale del modello KNN ottimizzato-----")
-best_knn_model = grid_search.best_estimator_
+best_knn_model = grid_search_knn.best_estimator_
 y_final_preds = best_knn_model.predict(X_test_scaled)
 acc = accuracy_score(y_test, y_final_preds)
 print(f"\n Classification Report:\nAccuracy: {acc:.3f}\n", classification_report(y_test, y_final_preds, target_names=['Extrovert', 'Introvert']))
 
 # rappresentazione grafica dei risultati
-results_df = pd.DataFrame(grid_search.cv_results_)
+results_df = pd.DataFrame(grid_search_knn.cv_results_)
 plt.figure(num = "Ricerca Iperparametri", figsize=(12, 6))
 plt.suptitle('PERFORMANCE DI KNN (TRAINING VS VALIDATION)', fontsize=14)
 sns.lineplot(x=results_df['param_n_neighbors'], 
@@ -74,13 +77,8 @@ plt.show()
 
 # curva di ROC
 y_pred_proba = best_knn_model.predict_proba(X_test_scaled)[:, 1]
-
-# valori per la curva ROC
 fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
-
-# area sotto la curva (AUC)
 auc = roc_auc_score(y_test, y_pred_proba)
-
 plt.figure(num = "Curva ROC KNN Ottimizzato", figsize=(8, 6))
 plt.suptitle('CURVA ROC PER KNN OTTIMIZZATO', fontsize=14)
 plt.plot(fpr, tpr, color='blue', label=f'Curva ROC (AUC = {auc:.2f})')

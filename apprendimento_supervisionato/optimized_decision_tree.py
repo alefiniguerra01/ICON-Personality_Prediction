@@ -5,6 +5,9 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from train_val import X_test_scaled, X_train_scaled, y_train, y_test, X
 import matplotlib.pyplot as plt
 import seaborn as sns
+import warnings
+
+warnings.simplefilter("ignore", category=FutureWarning)
 
 print("\n-----Ricerca dei migliori iperparametri per Decision Tree-----")
 
@@ -28,7 +31,7 @@ grid_search_dt.fit(X_train_scaled, y_train)
 # visualizzazione dei risultati
 print("\n-----Ricerca completata-----")
 print("Migliori iperparametri trovati: ", grid_search_dt.best_params_)
-print(f"Miglior Accuracy (cross-validation): {grid_search_dt.best_score_:.3f}")
+print(f"Miglior Accuracy (Cross Validation): {grid_search_dt.best_score_:.3f}")
 
 # valutazione finale
 print("\n-----Valutazione finale del modello Decision Tree ottimizzato-----")

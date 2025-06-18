@@ -52,7 +52,7 @@ regola_punteggio(Persona, estroverso, 2) :-
 regola_punteggio(Persona, estroverso, 1) :-
     ha_tratto(Persona, frequenza_post(alta)).
 
-% regola che cacola il punteggio totale di ogni personalità
+% regola che calcola il punteggio totale di ogni personalità
 punteggio_totale(Persona, Tipo, PunteggioTotale) :-
     findall(Punteggio, regola_punteggio(Persona, Tipo, Punteggio), ListaPunteggi),
     sum_list(ListaPunteggi, PunteggioTotale).

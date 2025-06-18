@@ -1,6 +1,9 @@
 from data_exploration import df, numerical_columns, categorical_columns, sns, plt
 from sklearn.impute import KNNImputer,SimpleImputer
 from sklearn.preprocessing import LabelEncoder
+import warnings
+
+warnings.simplefilter("ignore", category=FutureWarning)
 
 # Controllo della presenza di valori nulli
 print("\n-----Controllo dei valori nulli-----")

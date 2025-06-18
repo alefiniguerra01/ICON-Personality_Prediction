@@ -5,7 +5,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, roc_auc_score, roc_curve
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from train_val import X_train_scaled, y_train, X_test_scaled, y_test, X
-from preprocessing import df
+import warnings
+
+warnings.simplefilter("ignore", category=FutureWarning)
 
 print("\n-----FASE 1: Inizio ricerca rapida con Random Search CV-----")
 rf = RandomForestClassifier(random_state=42)
@@ -19,7 +21,7 @@ param_dist = {
 }
 
 # stabilisco di eseguire 25 iterate
-random_search = RandomizedSearchCV(estimator=rf,
+random_search_rf = RandomizedSearchCV(estimator=rf,
                                    param_distributions=param_dist,
                                    n_iter=25,
                                    cv=5,
@@ -27,12 +29,12 @@ random_search = RandomizedSearchCV(estimator=rf,
                                    n_jobs=-1,
                                    random_state=42,
                                    verbose=1)
-random_search.fit(X_train_scaled, y_train)
+random_search_rf.fit(X_train_scaled, y_train)
 
 # stampo i risultati della fase 1
 print("\n-----Risultati FASE 1-----")
-best_params_random = random_search.best_params_
-print(f"Migliori parametri trovati nella ricerca casuale: {best_params_random}")
+best_params_random = random_search_rf.best_params_
+print(f"Migliori iperparametri trovati nella ricerca casuale: {best_params_random}")
 
 print("\n-----FASE 2: Inizio ricerca rirata con Grid Search CV-----")
 
@@ -47,20 +49,21 @@ param_grid_focused = {
     'min_samples_leaf': [best_params_random['min_samples_leaf']]
 }
 
-grid_search = GridSearchCV(estimator=rf,
+# grid search per una ricerca più mirata
+grid_search_rf = GridSearchCV(estimator=rf,
                            param_grid=param_grid_focused,
                            scoring='accuracy',
                            cv=5,
                            n_jobs=-1,
                            verbose=1)
-grid_search.fit(X_train_scaled, y_train)
+grid_search_rf.fit(X_train_scaled, y_train)
 
 print("\n-----Risultati FASE 2-----")
-print(f"Migliori iperparametri definitivi trovati:  {grid_search.best_params_}")
-print(f"\nMiglior accuracy ottenuto durante la cross-validation finale: {grid_search.best_score_:.3f}")
+print(f"Migliori iperparametri definitivi trovati: {grid_search_rf.best_params_}")
+print(f"Miglior Accuracy (Cross Validation): {grid_search_rf.best_score_:.3f}")
 
 print("\n-----Valutazione finale del modello Random Forest ottimizzato-----")
-best_rf_final = grid_search.best_estimator_
+best_rf_final = grid_search_rf.best_estimator_
 y_final_preds = best_rf_final.predict(X_test_scaled)
 acc = accuracy_score(y_test, y_final_preds)
 print(f"\n Classification Report:\nAccuracy: {acc:.3f}\n", classification_report(y_test, y_final_preds, target_names=['Extrovert', 'Introvert']))

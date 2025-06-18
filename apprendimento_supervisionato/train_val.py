@@ -6,8 +6,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_curve, roc_auc_score
-import matplotlib.pyplot as plt
-import seaborn as sns
+import warnings
+
+warnings.simplefilter("ignore", category=FutureWarning)
 
 # Suddivisione tra features e target
 X = df.drop("Personality", axis=1)

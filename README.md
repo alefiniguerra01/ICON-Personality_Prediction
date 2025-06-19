@@ -13,3 +13,16 @@ Nell'implementazione del progetto sono stati trattati i seguenti argomenti:
 ---
 
 ## 🔍 Struttura del repository
+Il repository contiene:
+- ```apprendimento_supervisionato```: file utilizzati per esplorare il dataset e visualizzare i risultati degli algoritmi di apprendimento supervisionato applicati al modello ***Personality Prediction***;
+- ```dataset```: dataset utilizzato dal modello;
+- ```documentazione```: documentazione del progetto;
+- ```img```: grafici inseriti nella documentazione;
+- ```sistema_esperto```: Knowledge Base System relativo all'argomento preso in esame;
+- ```requirements.txt```: file con l'elenco di tutte le dipendenze necessarie.
+
+---
+
+## ▶️ Esecuzione
+Innanzitutto, è necessario clonare il repository con il seguente comando:
+```git clone ```

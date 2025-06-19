@@ -10,6 +10,7 @@ import warnings
 warnings.simplefilter("ignore", category=FutureWarning)
 
 print("\n-----FASE 1: Inizio ricerca rapida con Random Search CV-----")
+print("Attenzione: questa fase potrebbe richiedere del tempo.")
 rf = RandomForestClassifier(random_state=42)
 
 # definisco gli iperparametri

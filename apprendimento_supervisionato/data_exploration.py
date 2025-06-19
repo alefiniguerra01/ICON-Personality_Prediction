@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     print("\n-----Visualizzazione della correlazione tra le features e il target-----")
     # feature numeriche con il target
-    plt.figure(num='Correlazione Features Numeriche vs. Target', figsize=(15, 7))
+    plt.figure(num='Correlazione Features Numeriche vs Target', figsize=(15, 7))
     plt.suptitle('CORRELAZIONE TRA FEATURES NUMERICHE E PERSONALITÀ',  fontsize=14)
     for i, col in enumerate(numerical_columns, 1):
         plt.subplot(2, 3, i)
@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
     # feature categoriche con il target
     cat_col = [col for col in categorical_columns if col != 'Personality']
-    plt.figure(num='Correlazione Features Categoriche vs. Target', figsize=(10, 6))
+    plt.figure(num='Correlazione Features Categoriche vs Target', figsize=(10, 6))
     plt.suptitle('CORRELAZIONE TRA FEATURES CATEGORICHE E PERSONALITÀ',  fontsize=14)
     for i, col in enumerate(cat_col, 1):
         plt.subplot(1, 2, i)

@@ -4,6 +4,7 @@ Il suo scopo principale è quello di predire la personalità di un individuo, sc
 
 ## Argomenti trattati
 Nell'implementazione del progetto sono stati trattati i seguenti argomenti:
-1. **apprendimento supervisionato**: il modello impara dal dataset [personality_dataset.csv](dataset/personality_dataset.csv) fornito in input;
-2. **apprendimento supervisionato con iperparametri**
-3. **sistema esperto**
+
+> - **apprendimento supervisionato**: il modello impara dal dataset personality_dataset.csv fornito in input e viene addestrato per effettuare le sue previsioni;
+> - **apprendimento supervisionato con iperparametri**: il modello viene affinato per migliorare l'accuratezza delle sue previsioni;
+> - **sistema esperto**: tramite una base di conoscenza e un modello inferenziale, viene creato un *Knowledge Base System* che emula il ragionamento umano per arrivare ad una conclusione.

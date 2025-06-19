@@ -74,4 +74,4 @@ per lanciare l'interfaccia utente realizzata per il sistema esperto.
 
 ## 👤 Autrice
 Realizzato da:
-- Finiguerra Alessia
+- Finiguerra Alessia, a.finiguerra1@studenti.uniba.it

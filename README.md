@@ -66,7 +66,7 @@ oppure (se ci si trova nella cartella ```apprendimento_supervisionato```):
 
 e digitare il comando:
 
-    python sistema_esperto.py
+    python expert_system_personality.py
 
 per lanciare l'interfaccia utente realizzata per il sistema esperto.
 

@@ -1,5 +1,5 @@
 # 👥 Personality Prediction
-***Personality Prediction*** è un progetto sviluppato sviluppato per l'esame di Ingegneria della Conoscenza del corso di Informatica dell'Università degli Studi di Bari.  
+***Personality Prediction*** è un progetto sviluppato per l'esame di Ingegneria della Conoscenza del corso di Informatica dell'Università degli Studi di Bari.  
 Il suo scopo principale è quello di predire la personalità di un individuo, scegliendo tra *introverso* oppure *estroverso*.
 
 ---
@@ -52,7 +52,7 @@ sostituendo **nome_del_file.py** con il file che si vuole eseguire (ad esempio: 
 
 ### 📍 Apprendimento Supervisionato con Iperparametri
 Per la fase di tuning, si è deciso di migliorare i modelli *KNN*, *Random Forest* e *Decision Tree*.  
-Per visualizzare i risultati dell'ottimizzazione di ogni modello, è possibile eseguire i file ```optimized_KNN.py```, ```optimized_random_forest.py``` e ```optimized_decision_tree.py``` digitando lo stesso comando utilizzato precedentemente.
+Per visualizzare i risultati dell'ottimizzazione di ogni modello, è possibile eseguire i file ```optimized_KNN.py```, ```optimized_random_forest.py``` e ```optimized_decision_tree.py``` digitando lo stesso comando descritto precedentemente.
 
 ### 📍 Sistema Esperto
 Per eseguire il Knowledge Base System è necessario installare l'ambiente di sviluppo [SWI-Prolog](https://www.swi-prolog.org/download/devel) (❗️spuntare l'aggiunta alla variabile *path*).  
@@ -74,4 +74,4 @@ per lanciare l'interfaccia utente realizzata per il sistema esperto.
 
 ## 👤 Autrice
 Realizzato da:
-- Finiguerra Alessia, a.finiguerra1@studenti.uniba.it
+- Finiguerra Alessia: matricola: 735326, email: a.finiguerra1@studenti.uniba.it

@@ -72,6 +72,12 @@ per lanciare l'interfaccia utente realizzata per il sistema esperto.
 
 ---
 
+## 🚀 Sviluppi futuri
+- Ampliamento dei profili della personalità previsti
+- Chatbot per dialogare con il sistema esperto
+
+---
+
 ## 👤 Autrice
 Realizzato da:
 - **Finiguerra Alessia**: matricola: 735326, email: a.finiguerra1@studenti.uniba.it

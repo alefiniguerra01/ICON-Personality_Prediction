@@ -24,7 +24,7 @@ Il repository contiene:
 ---
 
 ## ▶️ Esecuzione
-Innanzitutto, è necessario clonare il repository con il seguente comando:  
+Innanzitutto, è necessario aprire il terminale e clonare il repository con il seguente comando:  
 
     git clone https://github.com/alefiniguerra01/ICON-Personality_Prediction.git
 

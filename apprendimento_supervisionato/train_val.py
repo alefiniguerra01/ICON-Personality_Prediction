@@ -10,19 +10,19 @@ import warnings
 
 warnings.simplefilter("ignore", category=FutureWarning)
 
-# Suddivisione tra features e target
+# suddivisione tra features e target
 X = df.drop("Personality", axis=1)
 y = df["Personality"]
 
-# Suddivisione in training set e test set
+# suddivisione in training set e test set
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 42)
 
-# Standardizzazione
+# standardizzazione
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# Addestramento
+# addestramento
 models = {
     'Random Forest': RandomForestClassifier(random_state=42),
     'Gradient Boosting': GradientBoostingClassifier(random_state=42),

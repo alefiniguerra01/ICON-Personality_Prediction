@@ -1,90 +1,108 @@
+from matplotlib import pyplot as plt
 import pandas as pd
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, roc_curve, roc_auc_score
-from sklearn.model_selection import GridSearchCV, StratifiedKFold
+from sklearn.preprocessing import StandardScaler
+from preprocessing import df
+from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.neighbors import KNeighborsClassifier
-import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
-from train_val import X_train_scaled, y_train, X_test_scaled, y_test
+from collections import Counter
 import warnings
 
 warnings.simplefilter("ignore", category=FutureWarning)
 
 print("\n-----Ricerca dei migliori iperparametri per KNN-----")
 
-knn = KNeighborsClassifier()
+# suddivisione tra features e target
+X = df.drop("Personality", axis=1)
+y = df["Personality"]
 
-# imposto gli iperparametri da ottimizzare
-param_grid = {
-    'n_neighbors': list(range(1, 31))
-}
+# parametri
+n_runs = 10
+n_neighbors = range(1, 31)
 
-# utilizzo Grid Search CV
-grid_search_knn = GridSearchCV(estimator=knn,
-                           param_grid=param_grid,
-                           scoring='accuracy',
-                           cv=5,
-                           n_jobs=-1,
-                           verbose=1,
-                           return_train_score=True)
+all_means = []  # Lista di liste, ogni sotto-lista media accuracies per ogni n_neighbors in una run
+all_stds = []   # Lista di liste, deviazioni standard per ogni n_neighbors in una run
 
-grid_search_knn.fit(X_train_scaled, y_train)
+for run in range(n_runs):
+    print(f"Run {run + 1}/{n_runs}")
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=run, stratify=y)
 
-# stampo i risultati
-print("\n-----Ricerca completata-----")
-best_k = grid_search_knn.best_params_['n_neighbors']
-print(f"Migliori iperparametri trovati: {grid_search_knn.best_params_}")
-print(f"Miglior Accuracy (Cross Validation): {grid_search_knn.best_score_:.3f}")
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
 
-# valutazione finale
-print("\n-----Valutazione finale del modello KNN ottimizzato-----")
-best_knn_model = grid_search_knn.best_estimator_
-y_final_preds = best_knn_model.predict(X_test_scaled)
-acc = accuracy_score(y_test, y_final_preds)
-print(f"\n Classification Report:\nAccuracy: {acc:.3f}\n", classification_report(y_test, y_final_preds, target_names=['Extrovert', 'Introvert']))
+    mean_scores = []
+    std_scores = []
 
-# rappresentazione grafica dei risultati
-results_df = pd.DataFrame(grid_search_knn.cv_results_)
-plt.figure(num = "Ricerca Iperparametri", figsize=(12, 6))
-plt.suptitle('PERFORMANCE DI KNN (TRAINING VS VALIDATION)', fontsize=14)
-sns.lineplot(x=results_df['param_n_neighbors'], 
-                y=results_df['mean_test_score'], 
-                marker='o', 
-                color='royalblue', 
-                label='Validation Score')
-sns.lineplot(x=results_df['param_n_neighbors'], 
-                y=results_df['mean_train_score'], 
-                marker='o', 
-                color='darkorange', 
-                label='Training Score')
-plt.xlabel('Numero di Vicini (k)')
-plt.ylabel('Accuracy')
-plt.axvline(x=best_k, color='red', linestyle='--', label=f'Miglior valore n_neighbors = {best_k}')
-plt.legend()
+    for neighbors in n_neighbors:
+        knn = KNeighborsClassifier(n_neighbors=neighbors)
+        scores = cross_val_score(knn, X_train, y_train, cv=5, scoring='accuracy')
+        mean_scores.append(scores.mean())
+        std_scores.append(scores.std())
+
+    all_means.append(mean_scores)
+    all_stds.append(std_scores)
+
+    # Stampare media e std delle accuracy di tutti i neighbors per la run corrente
+    mean_run = np.mean(mean_scores)
+    std_run = np.std(mean_scores)
+    print(f"  Cross-Validation accuracy mean: {mean_run:.4f}, Cross-Validation accuracy std: {std_run:.4f}")
+
+all_means_array = np.array(all_means)
+all_stds_array = np.array(all_stds)
+
+# Calcolo accuracy media e deviazione standard per ogni neighbors su tutte le run
+mean_accuracy_for_neighbors = np.mean(all_means_array, axis=0)
+std_accuracy_for_neighbors = np.std(all_means_array, axis=0)
+
+best_global_idx = np.argmax(mean_accuracy_for_neighbors)
+best_global_neighbors = n_neighbors[best_global_idx]
+
+print(f"\n Miglior valore globale di k: {best_global_neighbors}")
+print(f"   Accuracy media: {mean_accuracy_for_neighbors[best_global_idx]:.4f}")
+print(f"   Deviazione standard: {std_accuracy_for_neighbors[best_global_idx]:.4f}")
+
+# Grafico unico con accuracy media e deviazione standard per tutt i valori di n_neighbors
+plt.figure(figsize=(10, 5), num = "Accuracy Media e Deviazione Standard per Valori di n_neighbors")
+plt.errorbar(n_neighbors, mean_accuracy_for_neighbors, yerr=std_accuracy_for_neighbors,
+             fmt='-o', capsize=4, label='Accuracy media ± std')
+plt.axvline(x=best_global_neighbors, color='red', linestyle='--', label=f'Miglior neighbors = {best_global_neighbors}')
+plt.title("ACCURACY MEDIA E DEVIAZIONE STANDARD (SU 10 RUN)", fontsize=14)
+plt.xlabel("Valore di n_neighbors")
+plt.ylabel("Accuracy media")
 plt.grid(True)
+plt.legend()
+plt.tight_layout()
 plt.show()
 
-# matrice di confusione
-cm = confusion_matrix(y_test, y_final_preds)
+# Tabella riassuntiva
+run_summary = []
+for i in range(n_runs):
+    mean_run = np.mean(all_means_array[i])
+    std_run = np.std(all_means_array[i])
+    run_summary.append({'Run': i+1, 'Mean Accuracy over n_neighbors': mean_run, 'Std Accuracy over n_neighbors': std_run})
 
-plt.figure(num = "Matrice di Confusione KNN Ottimizzato", figsize=(8, 6))
-plt.suptitle('MATRICE DI CONFUSIONE PER KNN OTTIMIZZATO', fontsize=14)
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
-                xticklabels=['Extrovert', 'Introvert'], 
-                yticklabels=['Extrovert', 'Introvert'])
-plt.xlabel('Valore Previsto')
-plt.ylabel('Valore Reale')
-plt.show()
+summary_df = pd.DataFrame(run_summary)
 
-# curva di ROC
-y_pred_proba = best_knn_model.predict_proba(X_test_scaled)[:, 1]
-fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
-auc = roc_auc_score(y_test, y_pred_proba)
-plt.figure(num = "Curva ROC KNN Ottimizzato", figsize=(8, 6))
-plt.suptitle('CURVA ROC PER KNN OTTIMIZZATO', fontsize=14)
-plt.plot(fpr, tpr, color='blue', label=f'Curva ROC (AUC = {auc:.2f})')
-plt.plot([0, 1], [0, 1], color='red', linestyle='--', label='Classificatore Casuale')
-plt.xlabel('Tasso di Falsi Positivi (FPR)')
-plt.ylabel('Tasso di Veri Positivi (TPR)')
+print("\nTabella riassuntiva delle run:")
+print(summary_df.to_string(index=False, float_format="%.4f"))
+
+plt.figure(figsize=(10, 6), num = "Cross-Validation Accuracy per Run")
+plt.errorbar(
+    summary_df['Run'],
+    summary_df['Mean Accuracy over n_neighbors'],
+    yerr=summary_df['Std Accuracy over n_neighbors'],
+    fmt='-o',
+    color='blue',
+    label ='CV Accuracy (Media ± Deviazione Standard)'
+)
+plt.xlabel("Run")
+plt.ylabel("CV Accuracy (Media ± Deviazione Standard)")
+plt.title("CROSS-VALIDATION ACCURACY PER RUN (MEDIA E DEVIAZIONE STANDARD)", fontsize=14)
+plt.ylim(0.5, 1.0)
+plt.grid(axis='y')
 plt.legend()
-plt.grid(True)
+plt.tight_layout()
 plt.show()

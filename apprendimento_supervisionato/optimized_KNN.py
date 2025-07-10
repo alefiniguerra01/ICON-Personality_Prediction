@@ -5,8 +5,6 @@ from preprocessing import df
 from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 import numpy as np
-import seaborn as sns
-from collections import Counter
 import warnings
 
 warnings.simplefilter("ignore", category=FutureWarning)

@@ -27,6 +27,7 @@ for run in range(n_runs):
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=run, stratify=y)
 
+    # standardizzazione
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
@@ -43,7 +44,7 @@ for run in range(n_runs):
     all_means.append(mean_scores)
     all_stds.append(std_scores)
 
-    # Stampare media e std delle accuracy di tutti i neighbors per la run corrente
+    # media e std delle accuracy di tutti i neighbors per la run corrente
     mean_run = np.mean(mean_scores)
     std_run = np.std(mean_scores)
     print(f"  Cross-Validation accuracy mean: {mean_run:.4f}, Cross-Validation accuracy std: {std_run:.4f}")
@@ -51,7 +52,7 @@ for run in range(n_runs):
 all_means_array = np.array(all_means)
 all_stds_array = np.array(all_stds)
 
-# Calcolo accuracy media e deviazione standard per ogni neighbors su tutte le run
+# accuracy media e deviazione standard per ogni neighbors su tutte le run
 mean_accuracy_for_neighbors = np.mean(all_means_array, axis=0)
 std_accuracy_for_neighbors = np.std(all_means_array, axis=0)
 
@@ -62,7 +63,7 @@ print(f"\n Miglior valore globale di k: {best_global_neighbors}")
 print(f"   Accuracy media: {mean_accuracy_for_neighbors[best_global_idx]:.4f}")
 print(f"   Deviazione standard: {std_accuracy_for_neighbors[best_global_idx]:.4f}")
 
-# Grafico unico con accuracy media e deviazione standard per tutt i valori di n_neighbors
+# grafico unico con accuracy media e deviazione standard per tutti i valori di n_neighbors
 plt.figure(figsize=(10, 5), num = "Accuracy Media e Deviazione Standard per Valori di n_neighbors")
 plt.errorbar(n_neighbors, mean_accuracy_for_neighbors, yerr=std_accuracy_for_neighbors,
              fmt='-o', capsize=4, label='Accuracy media ± std')
@@ -75,7 +76,7 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-# Tabella riassuntiva
+# tabella riassuntiva delle run
 run_summary = []
 for i in range(n_runs):
     mean_run = np.mean(all_means_array[i])
@@ -87,6 +88,7 @@ summary_df = pd.DataFrame(run_summary)
 print("\nTabella riassuntiva delle run:")
 print(summary_df.to_string(index=False, float_format="%.4f"))
 
+# grafico della media e deviazione standard delle accuracy per run
 plt.figure(figsize=(10, 6), num = "Cross-Validation Accuracy per Run")
 plt.errorbar(
     summary_df['Run'],

@@ -9,7 +9,7 @@ import warnings
 
 warnings.simplefilter("ignore", category=FutureWarning)
 
-print("\n-----Ricerca dei migliori iperparametri per KNN-----")
+print("\n----- Ricerca dei migliori iperparametri per KNN -----")
 
 # suddivisione tra features e target
 X = df.drop("Personality", axis=1)
@@ -25,12 +25,11 @@ all_stds = []   # Lista di liste, deviazioni standard per ogni n_neighbors in un
 for run in range(n_runs):
     print(f"Run {run + 1}/{n_runs}")
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=run, stratify=y)
+    X_train, _, y_train, _ = train_test_split(X, y, test_size=0.2, random_state=run, stratify=y)
 
     # standardizzazione
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
 
     mean_scores = []
     std_scores = []
@@ -47,7 +46,8 @@ for run in range(n_runs):
     # media e std delle accuracy di tutti i neighbors per la run corrente
     mean_run = np.mean(mean_scores)
     std_run = np.std(mean_scores)
-    print(f"  Cross-Validation accuracy mean: {mean_run:.4f}, Cross-Validation accuracy std: {std_run:.4f}")
+    print(f"  Cross-Validation mean accuracy: {mean_run:.4f}") 
+    print(f"  Cross-Validation std accuracy: {std_run:.4f}")
 
 all_means_array = np.array(all_means)
 all_stds_array = np.array(all_stds)
@@ -65,12 +65,24 @@ print(f"   Deviazione standard: {std_accuracy_for_neighbors[best_global_idx]:.4f
 
 # grafico unico con accuracy media e deviazione standard per tutti i valori di n_neighbors
 plt.figure(figsize=(10, 5), num = "Accuracy Media e Deviazione Standard per Valori di n_neighbors")
-plt.errorbar(n_neighbors, mean_accuracy_for_neighbors, yerr=std_accuracy_for_neighbors,
-             fmt='-o', capsize=4, label='Accuracy media ± std')
-plt.axvline(x=best_global_neighbors, color='red', linestyle='--', label=f'Miglior neighbors = {best_global_neighbors}')
+plt.errorbar(
+    n_neighbors, 
+    mean_accuracy_for_neighbors, 
+    yerr=std_accuracy_for_neighbors,
+    fmt='o--', 
+    capsize=4, 
+    color = 'blue',
+    label='Accuracy media ± std'
+)
+plt.axvline(
+    x=best_global_neighbors, 
+    color='red', 
+    linestyle='--', 
+    label=f'Miglior neighbors = {best_global_neighbors}'
+)
 plt.title("ACCURACY MEDIA E DEVIAZIONE STANDARD (SU 10 RUN)", fontsize=14)
 plt.xlabel("Valore di n_neighbors")
-plt.ylabel("Accuracy media")
+plt.ylabel("Accuracy")
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
@@ -81,7 +93,7 @@ run_summary = []
 for i in range(n_runs):
     mean_run = np.mean(all_means_array[i])
     std_run = np.std(all_means_array[i])
-    run_summary.append({'Run': i+1, 'Mean Accuracy over n_neighbors': mean_run, 'Std Accuracy over n_neighbors': std_run})
+    run_summary.append({'Run': i+1, 'CV Accuracy': mean_run, 'CV Std': std_run})
 
 summary_df = pd.DataFrame(run_summary)
 
@@ -89,20 +101,22 @@ print("\nTabella riassuntiva delle run:")
 print(summary_df.to_string(index=False, float_format="%.4f"))
 
 # grafico della media e deviazione standard delle accuracy per run
-plt.figure(figsize=(10, 6), num = "Cross-Validation Accuracy per Run")
+plt.figure(figsize=(10, 6), num = "KNN - CV Accuracy su 10 Run")
+
 plt.errorbar(
     summary_df['Run'],
-    summary_df['Mean Accuracy over n_neighbors'],
-    yerr=summary_df['Std Accuracy over n_neighbors'],
-    fmt='-o',
+    summary_df['CV Accuracy'],
+    yerr=summary_df['CV Std'],
+    fmt='o--',
+    capsize=4,
     color='blue',
     label ='CV Accuracy (Media ± Deviazione Standard)'
 )
 plt.xlabel("Run")
-plt.ylabel("CV Accuracy (Media ± Deviazione Standard)")
-plt.title("CROSS-VALIDATION ACCURACY PER RUN (MEDIA E DEVIAZIONE STANDARD)", fontsize=14)
+plt.ylabel("CV Accuracy")
+plt.title("KNN - ACCURACY MEDIA IN CROSS-VALIDATION (10 RUN)", fontsize=14)
 plt.ylim(0.5, 1.0)
-plt.grid(axis='y')
+plt.grid(True)
 plt.legend()
 plt.tight_layout()
 plt.show()

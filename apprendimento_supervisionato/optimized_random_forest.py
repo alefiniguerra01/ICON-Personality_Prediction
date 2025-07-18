@@ -11,16 +11,16 @@ from preprocessing import df
 
 warnings.simplefilter("ignore", category=FutureWarning)
 
-# Separazione features e target
+# suddivisione tra features e target
 X = df.drop("Personality", axis=1)
 y = df["Personality"]
 
-# Parametri
 n_runs = 10
 means_cv = []      # mean CV accuracy
 stds_cv = []       # std CV accuracy
 best_params_all_runs = []
 
+# parametri
 param_dist = {
     'n_estimators': randint(50, 200),
     'max_depth': [None, 5, 10, 15],
@@ -76,6 +76,8 @@ plt.errorbar(
     yerr=summary_df['CV Std'],
     fmt='o--',
     capsize=4,
+    elinewidth=2,
+    markeredgewidth=2,
     color='green',
     label='CV Accuracy (Media ± Deviazione Standard)'
 )

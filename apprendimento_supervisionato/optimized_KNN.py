@@ -70,7 +70,9 @@ plt.errorbar(
     mean_accuracy_for_neighbors, 
     yerr=std_accuracy_for_neighbors,
     fmt='o--', 
-    capsize=4, 
+    capsize=4,
+    elinewidth=2,
+    markeredgewidth=2, 
     color = 'blue',
     label='Accuracy media ± std'
 )
@@ -102,13 +104,14 @@ print(summary_df.to_string(index=False, float_format="%.4f"))
 
 # grafico della media e deviazione standard delle accuracy per run
 plt.figure(figsize=(10, 6), num = "KNN - CV Accuracy su 10 Run")
-
 plt.errorbar(
     summary_df['Run'],
     summary_df['CV Accuracy'],
     yerr=summary_df['CV Std'],
     fmt='o--',
     capsize=4,
+    elinewidth=2,
+    markeredgewidth=2,
     color='blue',
     label ='CV Accuracy (Media ± Deviazione Standard)'
 )

@@ -22,7 +22,7 @@ def run_personality_expert_system():
     def ask_multiple_choice(question, options):
         while True:
             print(f"\n{question} Opzioni possibili: {', '.join(options)}")
-            risposta = input("La tua scelta: ").lower()
+            risposta = input("  La tua scelta: ").lower()
             if risposta in options:
                 return risposta
             print("ERRORE: Inserimento non valido, per favore scegli una delle opzioni elencate.")
@@ -76,25 +76,14 @@ def run_personality_expert_system():
     # interrogazione della KB per determinare la personalità
     print("\n--- Analisi della personalità in corso... ---")
     try:
-        results = list(prolog.query("personalita_con_punteggio(utente, Tipo, Punteggio)"))
+        result = list(prolog.query("personalita(utente, Tipo)"))
 
-        if not results:
-            print("Nessuna personalità ha ottenuto un punteggio. Risultato: INDETERMINATO")
-            return
-                        
-        best_result = max(results, key=lambda x: x['Punteggio'])
-        max_score = best_result['Punteggio']
-        winners = [res['Tipo'] for res in results if res['Punteggio'] == max_score]
-
-        # sistema a punteggio: se il punteggio è uguale, si ha la parità
-        if len(winners) == 1:
-            final_prediction = str(winners[0]).upper()
+        if result:
+            tipo = result[0]['Tipo']
+            print(f"\n--- Risultato finale: ---")
+            print(f"  La personalità dell'individuo è: {str(tipo).upper()}")
         else:
-            winner_names = [str(w).upper() for w in winners]
-            final_prediction = f"INDETERMINATO (Parità tra: {', '.join(winner_names)})"
-
-        print(f"\n--- Risultato finale: ---")
-        print(f"\nLa personalità dell'individuo è: {final_prediction}")
+            print("Nessuna personalità ha soddisfatto abbastanza regole. Risultato: INDETERMINATO")
     
     except Exception as e:
         print(f"ERRORE durante l'interrogazione della KB: {e}")

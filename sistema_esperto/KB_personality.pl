@@ -53,11 +53,12 @@ regola_punteggio(Persona, estroverso, 1) :-
     ha_tratto(Persona, frequenza_post(alta)).
 
 % regola che calcola il punteggio totale di ogni personalità
-punteggio_totale(Persona, Tipo, PunteggioTotale) :-
-    findall(Punteggio, regola_punteggio(Persona, Tipo, Punteggio), ListaPunteggi),
-    sum_list(ListaPunteggi, PunteggioTotale).
+conteggio_pesato(Persona, Tipo, Totale) :-
+    findall(Peso, regola_punteggio(Persona, Tipo, Peso), ListaPesi),
+    sum_list(ListaPesi, Totale).
 
 % regola che determina la personalità
-personalita_con_punteggio(Persona, Tipo, Punteggio) :-
-    tipo_personalita(Tipo),
-    punteggio_totale(Persona, Tipo, Punteggio).
+personalita(Persona, Tipo) :-
+    conteggio_pesato(Persona, introverso, Pi),
+    conteggio_pesato(Persona, estroverso, Pe),
+    ( Pi > Pe -> Tipo = introverso; Tipo = estroverso).

@@ -43,48 +43,42 @@ def run_personality_expert_system():
 
     # domande con risposta si/no
     paura_palco = ask_yes_no("Provi paura da palcoscenico?")
-    prolog.assertz(f"ha_tratto(utente, paura_palco({paura_palco}))")
+    prolog.assertz(f"ha_tratto(utente, paura_palco, {paura_palco})")
 
     svuotato_dopo_socializzazione = ask_yes_no("\nTi senti svuotato dopo aver socializzato?")
-    prolog.assertz(f"ha_tratto(utente, svuotato_dopo_socializzazione({svuotato_dopo_socializzazione}))")
+    prolog.assertz(f"ha_tratto(utente, svuotato_dopo_socializzazione, {svuotato_dopo_socializzazione})")
 
     # domande con risposta multipla
     partecipazione_eventi = ask_multiple_choice(
         "Con quale frequenza partecipi a eventi sociali?",
         ["alta", "media", "bassa"])
-    prolog.assertz(f"ha_tratto(utente, partecipazione_eventi({partecipazione_eventi}))")
+    prolog.assertz(f"ha_tratto(utente, partecipazione_eventi, {partecipazione_eventi})")
 
     frequenza_uscite = ask_multiple_choice(
         "Con quale frequenza esci?",
         ["alta", "media", "bassa"])
-    prolog.assertz(f"ha_tratto(utente, frequenza_uscite({frequenza_uscite}))")
+    prolog.assertz(f"ha_tratto(utente, frequenza_uscite, {frequenza_uscite})")
 
     frequenza_post = ask_multiple_choice(
         "Con quale frequenza pubblichi post sui social media?",
         ["alta", "media", "bassa"])
-    prolog.assertz(f"ha_tratto(utente, frequenza_post({frequenza_post}))")
+    prolog.assertz(f"ha_tratto(utente, frequenza_post, {frequenza_post})")
 
     # domande con risposta numerica
     tempo_da_solo = ask_numeric("\nQuante ore al giorno trascorri da solo in media?")
     categoria_tempo = "alto" if tempo_da_solo >= 8 else "medio" if tempo_da_solo >= 4 else "basso"
-    prolog.assertz(f"ha_tratto(utente, tempo_da_solo({categoria_tempo}))")
+    prolog.assertz(f"ha_tratto(utente, tempo_da_solo, {categoria_tempo})")
         
     dimensione_amici = ask_numeric("\nQuante persone ci sono nella tua cerchia di amici più stretta?")
     categoria_amici = "grande" if dimensione_amici >= 8 else "medio" if dimensione_amici >= 4 else "piccolo"
-    prolog.assertz(f"ha_tratto(utente, dimensione_amici({categoria_amici}))")
+    prolog.assertz(f"ha_tratto(utente, dimensione_amici, {categoria_amici})")
     
     # interrogazione della KB per determinare la personalità
     print("\n--- Analisi della personalità in corso... ---")
     try:
-        result = list(prolog.query("personalita(utente, Tipo)"))
+        
+        result = list(prolog.query("classificazione(utente)"))
 
-        if result:
-            tipo = result[0]['Tipo']
-            print(f"\n--- Risultato finale: ---")
-            print(f"  La personalità dell'individuo è: {str(tipo).upper()}")
-        else:
-            print("Nessuna personalità ha soddisfatto abbastanza regole. Risultato: INDETERMINATO")
-    
     except Exception as e:
         print(f"ERRORE durante l'interrogazione della KB: {e}")
 

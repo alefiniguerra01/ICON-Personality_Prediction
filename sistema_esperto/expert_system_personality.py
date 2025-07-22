@@ -77,7 +77,7 @@ def run_personality_expert_system():
     print("\n--- Analisi della personalità in corso... ---")
     try:
         
-        result = list(prolog.query("classificazione(utente)"))
+        list(prolog.query("classificazione(utente)"))
 
     except Exception as e:
         print(f"ERRORE durante l'interrogazione della KB: {e}")

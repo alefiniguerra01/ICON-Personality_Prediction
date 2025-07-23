@@ -1,63 +1,88 @@
-/*features:
-Time_spent_alone: tempo_da_solo (numerico da convertire in alto/media/basso)
-Stage_fear: paura_palco (si/no)
-Social_event_attendance: partecipazione_eventi (alta/media/bassa)
-Going_outside: frequenza_uscite (alta/media/bassa)
-Drained_after_socializing: svuotato_dopo_socializzazione (si/no)
-Friends_circle_size: dimensione_amici (numerico da convertire in grande/medio/piccolo)
-Post_frequency: frequenza_post (alta/media/bassa)
-*/
-
-:- dynamic ha_tratto/2. % indica che il predicato ha_tratto può essere modificato dinamicamente
+:- dynamic ha_tratto/3.  % ha_tratto(Persona, Tratto, Valore)
 
 tipo_personalita(introverso).
 tipo_personalita(estroverso).
 
-% regole per gli introversi
-regola_punteggio(Persona, introverso, 3) :- 
-    ha_tratto(Persona, tempo_da_solo(alto)).
+% ----- PESI -----
 
-regola_punteggio(Persona, introverso, 3) :-
-    ha_tratto(Persona, paura_palco(si)).
+% tempo_da_solo
+peso(introverso, tempo_da_solo, alto, 0.9).
+peso(introverso, tempo_da_solo, medio, 0.5).
+peso(introverso, tempo_da_solo, basso, 0.1).
 
-regola_punteggio(Persona, introverso, 3) :-
-    ha_tratto(Persona, frequenza_uscite(bassa)),
-    ha_tratto(Persona, svuotato_dopo_socializzazione(si)).
+peso(estroverso, tempo_da_solo, alto, 0.1).
+peso(estroverso, tempo_da_solo, medio, 0.4).
+peso(estroverso, tempo_da_solo, basso, 0.9).
 
-regola_punteggio(Persona, introverso, 2) :-
-    ha_tratto(Persona, dimensione_amici(piccolo)),
-    ha_tratto(Persona, tempo_da_solo(alto)).
+% paura_palco
+peso(introverso, paura_palco, si, 0.9).
+peso(introverso, paura_palco, no, 0.2).
 
-regola_punteggio(Persona, introverso, 2) :-
-    ha_tratto(Persona, partecipazione_eventi(bassa)).
+peso(estroverso, paura_palco, si, 0.1).
+peso(estroverso, paura_palco, no, 0.8).
 
-regola_punteggio(Persona, introverso, 1) :-
-    ha_tratto(Persona, frequenza_post(bassa)).
+% partecipazione_eventi
+peso(introverso, partecipazione_eventi, alta, 0.2).
+peso(introverso, partecipazione_eventi, media, 0.5).
+peso(introverso, partecipazione_eventi, bassa, 0.9).
 
-% regole per gli estroversi
-regola_punteggio(Persona, estroverso, 3) :-
-    ha_tratto(Persona, dimensione_amici(grande)).
+peso(estroverso, partecipazione_eventi, alta, 0.9).
+peso(estroverso, partecipazione_eventi, media, 0.6).
+peso(estroverso, partecipazione_eventi, bassa, 0.2).
 
-regola_punteggio(Persona, estroverso, 3) :-
-    ha_tratto(Persona, frequenza_uscite(alta)),
-    ha_tratto(Persona, partecipazione_eventi(alta)).
+% frequenza_uscite
+peso(introverso, frequenza_uscite, alta, 0.2).
+peso(introverso, frequenza_uscite, media, 0.5).
+peso(introverso, frequenza_uscite, bassa, 0.9).
 
-regola_punteggio(Persona, estroverso, 2) :-
-    ha_tratto(Persona, svuotato_dopo_socializzazione(no)),
-    ha_tratto(Persona, paura_palco(no)).
+peso(estroverso, frequenza_uscite, alta, 0.9).
+peso(estroverso, frequenza_uscite, media, 0.6).
+peso(estroverso, frequenza_uscite, bassa, 0.1).
 
-regola_punteggio(Persona, estroverso, 2) :-
-    ha_tratto(Persona, tempo_da_solo(basso)).
+% svuotato_dopo_socializzazione
+peso(introverso, svuotato_dopo_socializzazione, si, 0.9).
+peso(introverso, svuotato_dopo_socializzazione, no, 0.3).
 
-regola_punteggio(Persona, estroverso, 1) :-
-    ha_tratto(Persona, frequenza_post(alta)).
+peso(estroverso, svuotato_dopo_socializzazione, si, 0.2).
+peso(estroverso, svuotato_dopo_socializzazione, no, 0.8).
 
-% regola che calcola il punteggio totale di ogni personalità
-punteggio_totale(Persona, Tipo, PunteggioTotale) :-
-    findall(Punteggio, regola_punteggio(Persona, Tipo, Punteggio), ListaPunteggi),
-    sum_list(ListaPunteggi, PunteggioTotale).
+% dimensione_amici
+peso(introverso, dimensione_amici, grande, 0.2).
+peso(introverso, dimensione_amici, medio, 0.5).
+peso(introverso, dimensione_amici, piccolo, 0.9).
 
-% regola che determina la personalità
-personalita_con_punteggio(Persona, Tipo, Punteggio) :-
-    tipo_personalita(Tipo),
-    punteggio_totale(Persona, Tipo, Punteggio).
+peso(estroverso, dimensione_amici, grande, 0.9).
+peso(estroverso, dimensione_amici, medio, 0.6).
+peso(estroverso, dimensione_amici, piccolo, 0.2).
+
+% frequenza_post
+peso(introverso, frequenza_post, alta, 0.3).
+peso(introverso, frequenza_post, media, 0.6).
+peso(introverso, frequenza_post, bassa, 0.9).
+
+peso(estroverso, frequenza_post, alta, 0.9).
+peso(estroverso, frequenza_post, media, 0.6).
+peso(estroverso, frequenza_post, bassa, 0.2).
+
+% somma pesi per ogni tipo
+punteggio(Persona, Tipo, Totale) :-
+    findall(Peso, (ha_tratto(Persona, Tratto, Valore), peso(Tipo, Tratto, Valore, Peso)), ListaPesi), media(ListaPesi, Totale).
+
+% media dei pesi
+media(Lista, Media) :- sum_list(Lista, Somma), length(Lista, Len), Len > 0, Media is Somma / Len.
+
+% ----- CLASSIFICAZIONE -----
+classificazione(Persona) :- 
+    punteggio(Persona, introverso, P1),
+    punteggio(Persona, estroverso, P2),
+    Diff is abs(P1 - P2),
+    (Diff < 0.1 -> Tipo = indefinito;
+     P1 > P2 -> Tipo = introverso;
+     Tipo = estroverso),
+    upcase_atom(Tipo, TipoMaiuscolo),
+    format("  \nRISULTATO: la personalita' dell'utente e' -> ~w~n", [TipoMaiuscolo]),
+    format("  \nSpiegazione:~n"),
+    format("    - Punteggio Introverso: ~2f~n", [P1]),
+    format("    - Punteggio Estroverso: ~2f~n", [P2]),
+    (Tipo == indefinito -> format("    - La differenza tra i punteggi (~2f) e' troppo bassa o uguale a 0 per una classificazione affidabile.~n", [Diff]); 
+     format("    - La scelta e' stata fatta perche' il punteggio per ~w e' piu' alto di ~2f rispetto all'altro tipo.~n", [TipoMaiuscolo, Diff])).

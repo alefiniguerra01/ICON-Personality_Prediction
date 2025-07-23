@@ -5,24 +5,25 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
-from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_curve, roc_auc_score
+from sklearn.metrics import accuracy_score, classification_report
+import pandas as pd
 import warnings
 
 warnings.simplefilter("ignore", category=FutureWarning)
 
-# Suddivisione tra features e target
+# suddivisione tra features e target
 X = df.drop("Personality", axis=1)
 y = df["Personality"]
 
-# Suddivisione in training set e test set
+# suddivisione in training set e test set
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 42)
 
-# Standardizzazione
+# standardizzazione
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# Addestramento
+# addestramento
 models = {
     'Random Forest': RandomForestClassifier(random_state=42),
     'Gradient Boosting': GradientBoostingClassifier(random_state=42),
@@ -31,9 +32,22 @@ models = {
     'SVM': SVC(),
 }
 
-for name, model in models.items():
-    model.fit(X_train_scaled, y_train)
-    y_preds = model.predict(X_test_scaled)
-    acc = accuracy_score(y_test, y_preds)
-    print(f"\n-----{name}= Accuracy: {acc:.3f}-----")
-    print("\n Classification Report:\n", classification_report(y_test, y_preds, target_names=['Extrovert', 'Introvert']))
+accuracy_results = []
+
+if __name__ == "__main__":
+    for name, model in models.items():
+        model.fit(X_train_scaled, y_train)
+        y_preds = model.predict(X_test_scaled)
+        acc = accuracy_score(y_test, y_preds)
+
+        print(f"\n{'-'*10} {name} {'-'*10}")
+        print(f"Accuracy: {acc:.3f}")
+        print("Classification Report:\n", classification_report(y_test, y_preds, target_names=['Extrovert', 'Introvert']))
+
+        accuracy_results.append({"Modello": name, "Accuracy": acc})
+
+    results = pd.DataFrame(accuracy_results)
+    print("-"*30, "Riepilogo Accuracy", "-"*30)
+    results = results.sort_values(by='Accuracy', ascending=False).reset_index(drop=True)
+    results.index += 1
+    print(results)

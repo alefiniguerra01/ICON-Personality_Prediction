@@ -41,12 +41,12 @@ Spostandoci nella cartella ```apprendimento supervisionato``` mediante il comand
 
     cd apprendimento_supervisionato
 
-è possibile eseguire nell'ordine i file ```data_exploration.py```, ```preprocessing.py``` e ```train_val.py``` per eseguire rispettivamente le fasi di *Data Exploration*, *Preprocessing*, *Training and Evaluation* che rappresentano le prime tipiche fasi di un progetto di Machine Learning.  
+è possibile eseguire nell'ordine i file ```preprocessing.py``` e ```train_val.py``` per eseguire rispettivamente le fasi di *Preprocessing* e *Training and Evaluation* che rappresentano le prime tipiche fasi di un progetto di Machine Learning.  
 Il comando da digitare è il seguente:
 
     python nome_del_file.py
 
-sostituendo **nome_del_file.py** con il file che si vuole eseguire (ad esempio: ```python data_exploration.py```).
+sostituendo **nome_del_file.py** con il file che si vuole eseguire (ad esempio: ```python preprocessing.py```).
 
 ❗️Se si vogliono visualizzare direttamente le informazioni iniziali del dataset, il risultato della fase di preprocessing e le valutazioni dell'addestramento del modello, si consiglia di eseguire il file ```train_val.py```; se, invece, si vogliono visualizzare dettagliatamente i risultati di ogni fase (compresi i grafici presenti nella documentazione e nella cartella ```img```) si consiglia di eseguire separatamente ogni file nell'ordine descritto sopra.
 

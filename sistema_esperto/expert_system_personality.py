@@ -77,7 +77,22 @@ def run_personality_expert_system():
     print("\n--- Analisi della personalità in corso... ---")
     try:
         
-        list(prolog.query("classificazione(utente)"))
+        query = list(prolog.query("classificazione(utente, Tipo, CountIntro, CountEstro, P1, P2)"))
+
+        if query:
+            res = query[0]
+            tipo = res["Tipo"]
+            count_intro = res["CountIntro"]
+            count_estro = res["CountEstro"]
+            p1 = res["P1"]
+            p2 = res["P2"]
+
+        print(f"\nRISULTATO: la personalità dell'utente è -> {str(tipo).upper()}")
+
+        if abs(count_intro - count_estro) > 1:
+            print(f"MOTIVAZIONE: la scelta è stata fatta perchè sono stati osservati {count_intro} tratti introversi e {count_estro} tratti estroversi.")
+        else:
+            print(f"MOTIVAZIONE: i comportamenti osservati sono bilanciati, quindi si è ricorso alla logica a punteggio che suggerisce che l'utente è {str(tipo).upper()} (punteggio introverso: {p1:.2f} vs punteggio estroverso: {p2:.2f}).")
 
     except Exception as e:
         print(f"ERRORE durante l'interrogazione della KB: {e}")
